@@ -11,10 +11,9 @@ import (
 
 type ServiceClient struct {
 	PassengerClient pb.PassengerServiceClient
-	AddressClient   pb.AddressServiceClient
 }
 
-func InitServiceClient(c *config.Config) (pb.PassengerServiceClient, pb.AddressServiceClient) {
+func InitServiceClient(c *config.Config) pb.PassengerServiceClient {
 	// using WithInsecure() because no SSL running
 	cc, err := grpc.Dial(c.PassengerSvcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
@@ -22,5 +21,5 @@ func InitServiceClient(c *config.Config) (pb.PassengerServiceClient, pb.AddressS
 		fmt.Println("Could not connect:", err)
 	}
 
-	return pb.NewPassengerServiceClient(cc), pb.NewAddressServiceClient(cc)
+	return pb.NewPassengerServiceClient(cc)
 }
