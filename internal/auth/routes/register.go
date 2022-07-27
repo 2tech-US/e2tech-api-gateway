@@ -9,26 +9,26 @@ import (
 	"github.com/lntvan166/e2tech-api-gateway/internal/utils"
 )
 
-type RegisterRequestBody struct {
-	Phone       string `json:"phone"`
-	Password    string `json:"password"`
-	Name        string `json:"name"`
-	DateOfBirth string `json:"date_of_birth"`
+type registerRequestBody struct {
+	Phone       string `json:"phone" binding:"required,min=8,max=15,e164"`
+	Password    string `json:"password" binding:"required,min=6"`
+	Name        string `json:"name" binding:"required,min=3,max=50"`
+	DateOfBirth string `json:"date_of_birth" binding:"required" time_format:"2006-01-02"`
 }
 
 func Register(ctx *gin.Context, c pb.AuthServiceClient) {
-	b := RegisterRequestBody{}
+	var req registerRequestBody
 
-	if err := ctx.BindJSON(&b); err != nil {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	res, err := c.Register(context.Background(), &pb.RegisterRequest{
-		Phone:       b.Phone,
-		Password:    b.Password,
-		Name:        b.Name,
-		DateOfBirth: b.DateOfBirth,
+		Phone:       req.Phone,
+		Password:    req.Password,
+		Name:        req.Name,
+		DateOfBirth: req.DateOfBirth,
 	})
 
 	if err != nil {

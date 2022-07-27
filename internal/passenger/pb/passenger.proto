@@ -12,7 +12,6 @@ service PassengerService {
   rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse) {}
   rpc VerifyPassenger(VerifyPassengerRequest) returns (VerifyPassengerResponse) {}
   rpc DeletePassenger(DeletePassengerRequest) returns (DeletePassengerResponse) {}
-
 }
 
 message Passenger {

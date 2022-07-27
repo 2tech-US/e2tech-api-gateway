@@ -9,22 +9,21 @@ import (
 	"github.com/lntvan166/e2tech-api-gateway/internal/utils"
 )
 
-type LoginRequestBody struct {
-	Phone    string `json:"phone"`
-	Password string `json:"password"`
+type loginRequestBody struct {
+	Phone    string `json:"phone" binding:"required,min=8,max=15,e164"`
+	Password string `json:"password" binding:"required,min=6"`
 }
 
 func Login(ctx *gin.Context, c pb.AuthServiceClient) {
-	b := LoginRequestBody{}
-
-	if err := ctx.BindJSON(&b); err != nil {
+	var req loginRequestBody
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	res, err := c.Login(context.Background(), &pb.LoginRequest{
-		Phone:    b.Phone,
-		Password: b.Password,
+		Phone:    req.Phone,
+		Password: req.Password,
 	})
 
 	if err != nil {
