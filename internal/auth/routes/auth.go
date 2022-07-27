@@ -10,8 +10,8 @@ import (
 )
 
 type registerRequestBody struct {
-	Phone       string `json:"phone" binding:"required,min=8,max=15,e164"`
-	Password    string `json:"password" binding:"required,min=6"`
+	Phone       string `json:"phone" binding:"required,min=8,max=15"`
+	Password    string `json:"password" binding:"required,min=8"`
 	Name        string `json:"name" binding:"required,min=3,max=50"`
 	Role        string `json:"role" binding:"required,oneof=admin passenger driver"`
 	DateOfBirth string `json:"date_of_birth" binding:"required" time_format:"2006-01-02"`
@@ -42,8 +42,8 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 }
 
 type loginRequestBody struct {
-	Phone    string `json:"phone" binding:"required,min=8,max=15,e164"`
-	Password string `json:"password" binding:"required,min=6"`
+	Phone    string `json:"phone" binding:"required,min=8,max=15"`
+	Password string `json:"password" binding:"required,min=8"`
 }
 
 func Login(ctx *gin.Context, c pb.AuthServiceClient) {
@@ -67,7 +67,7 @@ func Login(ctx *gin.Context, c pb.AuthServiceClient) {
 }
 
 type verifyRequestBody struct {
-	Phone string `json:"phone" binding:"required,min=8,max=15,e164"`
+	Phone string `json:"phone" binding:"required,min=8,max=15"`
 	Token string `json:"token" binding:"required,min=32"`
 }
 

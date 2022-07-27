@@ -88,7 +88,7 @@ func ListPassengers(ctx *gin.Context, c pb.PassengerServiceClient) {
 
 type updatePassengerRequestBody struct {
 	ID          int64  `json:"id" binding:"required"`
-	Phone       string `json:"phone" binding:"required,min=8,max=15,e164"`
+	Phone       string `json:"phone" binding:"required,min=8,max=15"`
 	Name        string `json:"name" binding:"required"`
 	DateOfBirth string `json:"date_of_birth" binding:"required"`
 }
