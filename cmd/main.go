@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lntvan166/e2tech-api-gateway/internal/auth"
 	"github.com/lntvan166/e2tech-api-gateway/internal/config"
+	"github.com/lntvan166/e2tech-api-gateway/internal/passenger"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 
 	r := gin.Default()
 
-	auth.RegisterRoutes(r, &c)
+	authSvc := *auth.RegisterRoutes(r, &c)
+	passenger.RegisterRoutes(r, &c, &authSvc)
+
 	r.Run(c.Port)
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lntvan166/e2tech-api-gateway/internal/auth/pb"
+	"github.com/lntvan166/e2tech-api-gateway/internal/utils"
 )
 
 type RegisterRequestBody struct {
@@ -19,7 +20,7 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 	b := RegisterRequestBody{}
 
 	if err := ctx.BindJSON(&b); err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
@@ -31,7 +32,7 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 	})
 
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadGateway, err)
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
 		return
 	}
 
