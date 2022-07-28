@@ -10,11 +10,10 @@ import (
 )
 
 type registerRequestBody struct {
-	Phone       string `json:"phone" binding:"required,min=8,max=15"`
-	Password    string `json:"password" binding:"required,min=8"`
-	Name        string `json:"name" binding:"required,min=3,max=50"`
-	Role        string `json:"role" binding:"required,oneof=admin passenger driver"`
-	DateOfBirth string `json:"date_of_birth" binding:"required" time_format:"2006-01-02"`
+	Phone    string `json:"phone" binding:"required,min=8,max=15"`
+	Password string `json:"password" binding:"required,min=8"`
+	Name     string `json:"name" binding:"required,min=3,max=50"`
+	Role     string `json:"role" binding:"required,oneof=admin passenger driver"`
 }
 
 func Register(ctx *gin.Context, c pb.AuthServiceClient) {
@@ -26,11 +25,10 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 	}
 
 	res, err := c.Register(context.Background(), &pb.RegisterRequest{
-		Phone:       req.Phone,
-		Password:    req.Password,
-		Name:        req.Name,
-		Role:        req.Role,
-		DateOfBirth: req.DateOfBirth,
+		Phone:    req.Phone,
+		Password: req.Password,
+		Name:     req.Name,
+		Role:     req.Role,
 	})
 
 	if err != nil {
@@ -63,7 +61,7 @@ func Login(ctx *gin.Context, c pb.AuthServiceClient) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &res)
+	ctx.JSON(http.StatusOK, &res)
 }
 
 type verifyRequestBody struct {

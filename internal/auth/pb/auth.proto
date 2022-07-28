@@ -18,7 +18,6 @@ message RegisterRequest {
   string password = 2;
   string name = 3;
   string role = 4;
-  string dateOfBirth = 5;
 }
 
 message RegisterResponse {
