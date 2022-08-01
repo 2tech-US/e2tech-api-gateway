@@ -5,4 +5,7 @@ proto:
 api_gateway:
 	go run cmd/main.go
 
+update:
+	cd .. && make update
+
 .PHONY: proto server
