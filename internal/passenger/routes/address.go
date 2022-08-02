@@ -11,7 +11,7 @@ import (
 )
 
 type createAddressRequestBody struct {
-	PassengerID int64  `json:"passenger_id" binding:"required,min=1"`
+	Phone       string `json:"phone" binding:"required,min=1"`
 	Detail      string `json:"detail" binding:"required"`
 	HouseNumber string `json:"house_number"`
 	Street      string `json:"street" binding:"required"`
@@ -27,18 +27,19 @@ func CreateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	phone := ctx.GetString("phone")
+	if req.Phone != phone {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only create address from your own passenger")))
+		return
+	}
 	passengerID, err := getPassengerIDFromCtx(ctx, c)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	if req.PassengerID != passengerID {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only create address for your own passenger")))
-		return
-	}
 
 	res, err := c.CreateAddress(context.Background(), &pb.CreateAddressRequest{
-		PassengerId: req.PassengerID,
+		PassengerId: passengerID,
 		Detail:      req.Detail,
 		HouseNumber: req.HouseNumber,
 		Street:      req.Street,
@@ -56,7 +57,7 @@ func CreateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type getAddressRequestBody struct {
-	PassengerID int64 `uri:"passenger_id" binding:"required,min=1"`
+	Phone string `uri:"phone" binding:"required,min=8"`
 }
 
 func GetAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
@@ -66,18 +67,19 @@ func GetAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	phone := ctx.GetString("phone")
+	if req.Phone != phone {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get address from your own passenger")))
+		return
+	}
 	passengerID, err := getPassengerIDFromCtx(ctx, c)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	if req.PassengerID != passengerID {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get address from your own passenger")))
-		return
-	}
 
 	res, err := c.GetAddress(context.Background(), &pb.GetAddressRequest{
-		PassengerId: req.PassengerID,
+		PassengerId: passengerID,
 	})
 
 	if err != nil {
@@ -89,7 +91,7 @@ func GetAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type getLocationRequestBody struct {
-	PassengerID int64 `uri:"passenger_id" binding:"required,min=1"`
+	Phone string `uri:"phone" binding:"required,min=1"`
 }
 
 func GetLocation(ctx *gin.Context, c pb.PassengerServiceClient) {
@@ -99,18 +101,19 @@ func GetLocation(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	phone := ctx.GetString("phone")
+	if req.Phone != phone {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get location for your own passenger")))
+		return
+	}
 	passengerID, err := getPassengerIDFromCtx(ctx, c)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	if req.PassengerID != passengerID {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get location for your own passenger")))
-		return
-	}
 
 	res, err := c.GetLocation(context.Background(), &pb.GetLocationRequest{
-		PassengerId: req.PassengerID,
+		PassengerId: passengerID,
 	})
 
 	if err != nil {
@@ -122,7 +125,7 @@ func GetLocation(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type updateAddressRequestBody struct {
-	PassengerID int64  `json:"passenger_id" binding:"required,min=1"`
+	Phone       string `json:"phone" binding:"required,min=1"`
 	Detail      string `json:"detail" binding:"required"`
 	HouseNumber string `json:"house_number"`
 	Street      string `json:"street" binding:"required"`
@@ -138,10 +141,19 @@ func UpdateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	// todo check if address is yours
+	phone := ctx.GetString("phone")
+	if req.Phone != phone {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only update address for your own passenger")))
+		return
+	}
+	passengerID, err := getPassengerIDFromCtx(ctx, c)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
 
 	res, err := c.UpdateAddress(context.Background(), &pb.UpdateAddressRequest{
-		PassengerId: req.PassengerID,
+		PassengerId: passengerID,
 		Detail:      req.Detail,
 		HouseNumber: req.HouseNumber,
 		Street:      req.Street,
@@ -159,7 +171,7 @@ func UpdateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type deleteAddressRequestBody struct {
-	PassengerID int64 `uri:"passenger_id" binding:"required,min=1"`
+	Phone string `uri:"phone" binding:"required,min=1"`
 }
 
 func DeleteAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
@@ -169,8 +181,19 @@ func DeleteAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	phone := ctx.GetString("phone")
+	if req.Phone != phone {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only delete address for your own passenger")))
+		return
+	}
+	passengerID, err := getPassengerIDFromCtx(ctx, c)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
 	res, err := c.DeleteAddress(context.Background(), &pb.DeleteAddressRequest{
-		PassengerId: req.PassengerID,
+		PassengerId: passengerID,
 	})
 
 	if err != nil {

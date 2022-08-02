@@ -25,10 +25,10 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	addressRoutes := r.Group("/passengers/addresses")
 	addressRoutes.Use(a.AuthRequired)
 	addressRoutes.POST("/", svc.CreateAddress)
-	addressRoutes.GET("/:id", svc.GetAddress)
-	addressRoutes.GET("/location/:id", svc.GetLocation)
-	addressRoutes.PUT("/:id", svc.UpdateAddress)
-	addressRoutes.DELETE("/:id", svc.DeleteAddress)
+	addressRoutes.GET("/:phone", svc.GetAddress)
+	addressRoutes.GET("/location/:phone", svc.GetLocation)
+	addressRoutes.PUT("/", svc.UpdateAddress)
+	addressRoutes.DELETE("/:phone", svc.DeleteAddress)
 
 	return svc
 }
