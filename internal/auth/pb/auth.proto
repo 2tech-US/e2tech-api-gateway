@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package auth;
 
-option go_package = "./internal/pb";
+option go_package = "./internal/auth/pb";
 
 service AuthService {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
@@ -45,7 +45,7 @@ message ValidateRequest { string token = 1; }
 message ValidateResponse {
   int64 status = 1;
   string error = 2;
-  int64 userId = 3;
+  string phone = 3;
 }
 
 // Verify

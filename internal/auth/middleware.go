@@ -43,8 +43,8 @@ func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Set("userId", res.UserId)
-	// todo: set admin permission
+	ctx.Set("phone", res.Phone)
+	// todo set admin permission
 
 	ctx.Next()
 }
