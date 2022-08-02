@@ -62,7 +62,7 @@ func GetPassengerByPhone(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type listPassengersRequestBody struct {
-	Offset int32 `json:"offset" binding:"required,min=0"`
+	Offset int32 `json:"offset" binding:"min=0"`
 	Limit  int32 `json:"limit" binding:"required,min=1,max=100"`
 }
 
@@ -117,7 +117,7 @@ func UpdatePassenger(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type deletePassengerRequestBody struct {
-	Phone string `uri:"id" binding:"required"`
+	Phone string `uri:"phone" binding:"required"`
 }
 
 func DeletePassenger(ctx *gin.Context, c pb.PassengerServiceClient) {
