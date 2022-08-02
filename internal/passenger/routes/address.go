@@ -2,6 +2,7 @@ package routes
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -26,6 +27,16 @@ func CreateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	passengerID, err := getPassengerIDFromCtx(ctx, c)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+	if req.PassengerID != passengerID {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only create address for your own passenger")))
+		return
+	}
+
 	res, err := c.CreateAddress(context.Background(), &pb.CreateAddressRequest{
 		PassengerId: req.PassengerID,
 		Detail:      req.Detail,
@@ -41,7 +52,7 @@ func CreateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, &res)
+	ctx.JSON(http.StatusOK, &res)
 }
 
 type getAddressRequestBody struct {
@@ -52,6 +63,16 @@ func GetAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 	var req getAddressRequestBody
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	passengerID, err := getPassengerIDFromCtx(ctx, c)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+	if req.PassengerID != passengerID {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get address from your own passenger")))
 		return
 	}
 
@@ -78,6 +99,16 @@ func GetLocation(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	passengerID, err := getPassengerIDFromCtx(ctx, c)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+	if req.PassengerID != passengerID {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(fmt.Errorf("you can only get location for your own passenger")))
+		return
+	}
+
 	res, err := c.GetLocation(context.Background(), &pb.GetLocationRequest{
 		PassengerId: req.PassengerID,
 	})
@@ -91,7 +122,7 @@ func GetLocation(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type updateAddressRequestBody struct {
-	ID          int64  `json:"id" binding:"required,min=1"`
+	PassengerID int64  `json:"passenger_id" binding:"required,min=1"`
 	Detail      string `json:"detail" binding:"required"`
 	HouseNumber string `json:"house_number"`
 	Street      string `json:"street" binding:"required"`
@@ -107,8 +138,10 @@ func UpdateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
+	// todo check if address is yours
+
 	res, err := c.UpdateAddress(context.Background(), &pb.UpdateAddressRequest{
-		Id:          req.ID,
+		PassengerId: req.PassengerID,
 		Detail:      req.Detail,
 		HouseNumber: req.HouseNumber,
 		Street:      req.Street,
@@ -126,7 +159,7 @@ func UpdateAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type deleteAddressRequestBody struct {
-	ID int64 `uri:"id" binding:"required,min=1"`
+	PassengerID int64 `uri:"passenger_id" binding:"required,min=1"`
 }
 
 func DeleteAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
@@ -137,7 +170,7 @@ func DeleteAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 	}
 
 	res, err := c.DeleteAddress(context.Background(), &pb.DeleteAddressRequest{
-		Id: req.ID,
+		PassengerId: req.PassengerID,
 	})
 
 	if err != nil {
@@ -146,4 +179,20 @@ func DeleteAddress(ctx *gin.Context, c pb.PassengerServiceClient) {
 	}
 
 	ctx.JSON(http.StatusOK, &res)
+}
+
+func getPassengerIDFromCtx(ctx *gin.Context, c pb.PassengerServiceClient) (int64, error) {
+	phone := ctx.GetString("phone")
+	passengerRsp, err := c.GetPassengerByPhone(ctx, &pb.GetPassengerByPhoneRequest{
+		Phone: phone,
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	if passengerRsp.Passenger == nil {
+		return 0, fmt.Errorf("passenger not found")
+	}
+
+	return passengerRsp.Passenger.Id, nil
 }
