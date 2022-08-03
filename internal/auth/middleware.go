@@ -45,6 +45,7 @@ func (c *AuthMiddlewareConfig) AuthRequired(ctx *gin.Context) {
 
 	ctx.Set("phone", res.Phone)
 	// todo set admin permission
+	ctx.Set("role", res.Role)
 
 	ctx.Next()
 }

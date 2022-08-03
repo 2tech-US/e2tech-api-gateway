@@ -16,8 +16,7 @@ service AuthService {
 message RegisterRequest {
   string phone = 1;
   string password = 2;
-  string name = 3;
-  string role = 4;
+  string role = 3;
 }
 
 message RegisterResponse {
@@ -30,6 +29,7 @@ message RegisterResponse {
 message LoginRequest {
   string phone = 1;
   string password = 2;
+  string role = 3;
 }
 
 message LoginResponse {
@@ -46,6 +46,7 @@ message ValidateResponse {
   int64 status = 1;
   string error = 2;
   string phone = 3;
+  string role = 4;
 }
 
 // Verify

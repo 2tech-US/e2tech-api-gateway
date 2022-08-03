@@ -20,7 +20,6 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.GET("/", svc.ListPassengers)
 	routes.GET("/:phone", svc.GetPassengerByPhone)
 	routes.PUT("/", svc.UpdatePassenger)
-	routes.DELETE("/:phone", svc.DeletePassenger)
 
 	return svc
 }
