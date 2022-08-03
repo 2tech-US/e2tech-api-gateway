@@ -22,14 +22,6 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.PUT("/", svc.UpdatePassenger)
 	routes.DELETE("/:phone", svc.DeletePassenger)
 
-	addressRoutes := r.Group("/passengers/addresses")
-	addressRoutes.Use(a.AuthRequired)
-	addressRoutes.POST("/", svc.CreateAddress)
-	addressRoutes.GET("/:phone", svc.GetAddress)
-	addressRoutes.GET("/location/:phone", svc.GetLocation)
-	addressRoutes.PUT("/", svc.UpdateAddress)
-	addressRoutes.DELETE("/:phone", svc.DeleteAddress)
-
 	return svc
 }
 
@@ -47,24 +39,4 @@ func (svc *ServiceClient) UpdatePassenger(ctx *gin.Context) {
 
 func (svc *ServiceClient) DeletePassenger(ctx *gin.Context) {
 	routes.DeletePassenger(ctx, svc.PassengerClient)
-}
-
-func (svc *ServiceClient) CreateAddress(ctx *gin.Context) {
-	routes.CreateAddress(ctx, svc.PassengerClient)
-}
-
-func (svc *ServiceClient) GetAddress(ctx *gin.Context) {
-	routes.GetAddress(ctx, svc.PassengerClient)
-}
-
-func (svc *ServiceClient) GetLocation(ctx *gin.Context) {
-	routes.GetLocation(ctx, svc.PassengerClient)
-}
-
-func (svc *ServiceClient) UpdateAddress(ctx *gin.Context) {
-	routes.UpdateAddress(ctx, svc.PassengerClient)
-}
-
-func (svc *ServiceClient) DeleteAddress(ctx *gin.Context) {
-	routes.DeleteAddress(ctx, svc.PassengerClient)
 }
