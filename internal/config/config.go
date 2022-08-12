@@ -8,6 +8,7 @@ type Config struct {
 	PassengerSvcUrl string `mapstructure:"PASSENGER_SVC_URL"`
 	DriverSvcUrl    string `mapstructure:"DRIVER_SVC_URL"`
 	BookingSvcUrl   string `mapstructure:"BOOKING_SVC_URL"`
+	LocationSvcUrl  string `mapstructure:"LOCATION_SVC_URL"`
 }
 
 func LoadConfig() (c Config, err error) {

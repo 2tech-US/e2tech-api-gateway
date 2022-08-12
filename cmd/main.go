@@ -7,6 +7,7 @@ import (
 	"github.com/lntvan166/e2tech-api-gateway/internal/auth"
 	"github.com/lntvan166/e2tech-api-gateway/internal/config"
 	"github.com/lntvan166/e2tech-api-gateway/internal/driver"
+	"github.com/lntvan166/e2tech-api-gateway/internal/location"
 	"github.com/lntvan166/e2tech-api-gateway/internal/passenger"
 )
 
@@ -22,6 +23,7 @@ func main() {
 	authSvc := *auth.RegisterRoutes(r, &c)
 	passenger.RegisterRoutes(r, &c, &authSvc)
 	driver.RegisterRoutes(r, &c, &authSvc)
+	location.RegisterRoutes(r, &c, &authSvc)
 
 	r.Run(c.Port)
 }

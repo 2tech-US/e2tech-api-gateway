@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package location;
+
+option go_package = "./internal/pb";
+
+message Location {
+  double latitude = 1;
+  double longitude = 2;
+  int64 count = 3;
+}
+
+message Address {
+  string city = 1;
+  string district = 2;
+  string ward = 3;
+  string street = 4;
+  string home = 5;
+  Location location =6;
+}
+
+message LocationKey {
+  double latitude = 1;
+  double longitude = 2;
+}
+
+message AddressKey{
+  string city = 1;
+  string district = 2;
+  string ward = 3;
+  string street = 4;
+  string home = 5;
+}
+
+message createAddressRequest{
+  AddressKey addressKey = 1;
+}
+
+
+message getAddressRequest{
+  AddressKey addressKey =1;
+}
+message getAddressResponse{
+  int64 status =1;
+  string error = 2;
+  Address address = 3;
+}
+
+message getListAddressRequest{
+  int32 offset =1;
+  int32 limit =2;
+}
+
+message getListAddressResponse{
+  int64 status =1;
+  string error = 2;
+  repeated Address address = 3;
+}
+
+message updateAddressRequest{
+  AddressKey address= 1;
+  LocationKey location =2;
+}
+
+message updateAddressResponse{
+  int64 status =1;
+  string error = 2;
+  Address address = 3;
+}
+
+service LocationService {
+  // unary - synchronous
+  rpc getAddress(getAddressRequest) returns (getAddressResponse) {}
+  rpc getAddressList(getListAddressRequest) returns (getListAddressResponse) {}
+  rpc createAddress(createAddressRequest) returns (getAddressResponse) {}
+  rpc updateAddress(updateAddressRequest) returns (updateAddressResponse) {}
+
+  // server-streaming - asynchronous
+  //  rpc getAddressList(getListAddressRequest) returns (stream getListAddressResponse) {}
+  // client-streaming - asynchronous
+  // bi-direct-streaming
+}
