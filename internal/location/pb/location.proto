@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package location;
+package tech2.microservice;
 
+option java_multiple_files = true;
 option go_package = "./internal/pb";
 
 message Location {

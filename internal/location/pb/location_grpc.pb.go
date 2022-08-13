@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.3
-// source: location.proto
+// source: internal/location/pb/location.proto
 
 package pb
 
@@ -39,7 +39,7 @@ func NewLocationServiceClient(cc grpc.ClientConnInterface) LocationServiceClient
 
 func (c *locationServiceClient) GetAddress(ctx context.Context, in *GetAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error) {
 	out := new(GetAddressResponse)
-	err := c.cc.Invoke(ctx, "/location.LocationService/getAddress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/getAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *locationServiceClient) GetAddress(ctx context.Context, in *GetAddressRe
 
 func (c *locationServiceClient) GetAddressList(ctx context.Context, in *GetListAddressRequest, opts ...grpc.CallOption) (*GetListAddressResponse, error) {
 	out := new(GetListAddressResponse)
-	err := c.cc.Invoke(ctx, "/location.LocationService/getAddressList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/getAddressList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (c *locationServiceClient) GetAddressList(ctx context.Context, in *GetListA
 
 func (c *locationServiceClient) CreateAddress(ctx context.Context, in *CreateAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error) {
 	out := new(GetAddressResponse)
-	err := c.cc.Invoke(ctx, "/location.LocationService/createAddress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/createAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c *locationServiceClient) CreateAddress(ctx context.Context, in *CreateAdd
 
 func (c *locationServiceClient) UpdateAddress(ctx context.Context, in *UpdateAddressRequest, opts ...grpc.CallOption) (*UpdateAddressResponse, error) {
 	out := new(UpdateAddressResponse)
-	err := c.cc.Invoke(ctx, "/location.LocationService/updateAddress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/updateAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func _LocationService_GetAddress_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/location.LocationService/getAddress",
+		FullMethod: "/tech2.microservice.LocationService/getAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LocationServiceServer).GetAddress(ctx, req.(*GetAddressRequest))
@@ -142,7 +142,7 @@ func _LocationService_GetAddressList_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/location.LocationService/getAddressList",
+		FullMethod: "/tech2.microservice.LocationService/getAddressList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LocationServiceServer).GetAddressList(ctx, req.(*GetListAddressRequest))
@@ -160,7 +160,7 @@ func _LocationService_CreateAddress_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/location.LocationService/createAddress",
+		FullMethod: "/tech2.microservice.LocationService/createAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LocationServiceServer).CreateAddress(ctx, req.(*CreateAddressRequest))
@@ -178,7 +178,7 @@ func _LocationService_UpdateAddress_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/location.LocationService/updateAddress",
+		FullMethod: "/tech2.microservice.LocationService/updateAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LocationServiceServer).UpdateAddress(ctx, req.(*UpdateAddressRequest))
@@ -190,7 +190,7 @@ func _LocationService_UpdateAddress_Handler(srv interface{}, ctx context.Context
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var LocationService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "location.LocationService",
+	ServiceName: "tech2.microservice.LocationService",
 	HandlerType: (*LocationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -211,5 +211,5 @@ var LocationService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "location.proto",
+	Metadata: "internal/location/pb/location.proto",
 }
