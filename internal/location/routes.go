@@ -17,16 +17,18 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 
 	routes := r.Group("/location")
 	// routes.Use(a.AuthRequired)
-	// routes.GET("/", svc.listAddress)
-	routes.GET("/", svc.GetAddress)
-	routes.POST("/", svc.CreateAddress)
-	routes.PUT("/", svc.UpdateAddress)
+	routes.GET("/address", svc.GetAddress)
+	routes.POST("/address", svc.CreateAddress)
+	routes.PUT("/address", svc.UpdateAddress)
+	routes.GET("/address/search", svc.GetAddressList)
+
+	routes.GET("/request/:phone", svc.GetRequest)
+	routes.GET("/requests", svc.GetListRequest)
+	routes.GET("/requests/:phone", svc.GetListRequestBYPhone)
+
+	routes.POST("/request/", svc.CreateRequest)
 
 	return svc
-}
-
-func (svc *ServiceClient) CreateAddress(ctx *gin.Context) {
-	routes.CreateAddress(ctx, svc.LocationClient)
 }
 
 func (svc *ServiceClient) GetAddress(ctx *gin.Context) {
@@ -37,6 +39,25 @@ func (svc *ServiceClient) GetAddressList(ctx *gin.Context) {
 	routes.GetAddressList(ctx, svc.LocationClient)
 }
 
+func (svc *ServiceClient) CreateAddress(ctx *gin.Context) {
+	routes.CreateAddress(ctx, svc.LocationClient)
+}
+
 func (svc *ServiceClient) UpdateAddress(ctx *gin.Context) {
 	routes.UpdateAddress(ctx, svc.LocationClient)
+}
+
+func (svc *ServiceClient) GetRequest(ctx *gin.Context) {
+	routes.GetRequest(ctx, svc.LocationClient)
+}
+
+func (svc *ServiceClient) GetListRequest(ctx *gin.Context) {
+	routes.GetListRequest(ctx, svc.LocationClient)
+}
+
+func (svc *ServiceClient) GetListRequestBYPhone(ctx *gin.Context) {
+	routes.UpdateAddress(ctx, svc.LocationClient)
+}
+func (svc *ServiceClient) CreateRequest(ctx *gin.Context) {
+	routes.CreateRequest(ctx, svc.LocationClient)
 }
