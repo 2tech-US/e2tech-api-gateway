@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ func GetDriverByPhone(ctx *gin.Context, c pb.DriverServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, req.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -50,8 +49,8 @@ func ListDrivers(ctx *gin.Context, c pb.DriverServiceClient) {
 		return
 	}
 
-	if ctx.GetString("role") != utils.ADMIN {
-		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(fmt.Errorf("only admin can list drivers")))
+	if err := utils.VerifyAdminPermission(ctx); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
@@ -68,7 +67,6 @@ func ListDrivers(ctx *gin.Context, c pb.DriverServiceClient) {
 }
 
 type updateDriverRequestBody struct {
-	ID          int64  `json:"id" binding:"required"`
 	Phone       string `json:"phone" binding:"required,min=8,max=15"`
 	Name        string `json:"name" binding:"required"`
 	DateOfBirth string `json:"date_of_birth" binding:"required"`
@@ -82,13 +80,12 @@ func UpdateDriver(ctx *gin.Context, c pb.DriverServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, b.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, b.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
 	res, err := c.UpdateDriver(context.Background(), &pb.UpdateDriverRequest{
-		Id:          b.ID,
 		Phone:       b.Phone,
 		Name:        b.Name,
 		DateOfBirth: b.DateOfBirth,
@@ -113,7 +110,7 @@ func DeleteDriver(ctx *gin.Context, c pb.DriverServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, req.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -130,12 +127,64 @@ func DeleteDriver(ctx *gin.Context, c pb.DriverServiceClient) {
 	ctx.JSON(http.StatusOK, &res)
 }
 
-func verifyPermission(ctx *gin.Context, phoneBody string) error {
-	if ctx.GetString("role") == utils.ADMIN {
-		return nil
+type updateLocationRequestBody struct {
+	Phone     string  `json:"phone" binding:"required"`
+	Latitude  float64 `json:"latitude" binding:"required"`
+	Longitude float64 `json:"longitude" binding:"required"`
+}
+
+func UpdateLocation(ctx *gin.Context, c pb.DriverServiceClient) {
+	var req updateLocationRequestBody
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
 	}
-	if ctx.GetString("phone") != phoneBody {
-		return fmt.Errorf("you don't have permission to access this resource")
+
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
 	}
-	return nil
+
+	res, err := c.UpdateLocation(context.Background(), &pb.UpdateLocationRequest{
+		Phone:     req.Phone,
+		Latitude:  req.Latitude,
+		Longitude: req.Longitude,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
+
+type updateStatusRequestBody struct {
+	Phone  string `json:"phone" binding:"required"`
+	Status string `json:"status" binding:"required"`
+}
+
+func UpdateDriverStatus(ctx *gin.Context, c pb.DriverServiceClient) {
+	var req updateStatusRequestBody
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.UpdateStatus(context.Background(), &pb.UpdateStatusRequest{
+		Phone:  req.Phone,
+		Status: req.Status,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
 }

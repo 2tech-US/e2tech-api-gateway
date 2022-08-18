@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ func GetPassengerByPhone(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, req.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -50,8 +49,8 @@ func ListPassengers(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	if ctx.GetString("role") != utils.ADMIN {
-		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(fmt.Errorf("only admin can list passengers")))
+	if err := utils.VerifyAdminPermission(ctx); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
@@ -68,7 +67,6 @@ func ListPassengers(ctx *gin.Context, c pb.PassengerServiceClient) {
 }
 
 type updatePassengerRequestBody struct {
-	ID          int64  `json:"id" binding:"required"`
 	Phone       string `json:"phone" binding:"required,min=8,max=15"`
 	Name        string `json:"name" binding:"required"`
 	DateOfBirth string `json:"date_of_birth" binding:"required"`
@@ -82,13 +80,12 @@ func UpdatePassenger(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, b.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, b.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
 	res, err := c.UpdatePassenger(context.Background(), &pb.UpdatePassengerRequest{
-		Id:          b.ID,
 		Phone:       b.Phone,
 		Name:        b.Name,
 		DateOfBirth: b.DateOfBirth,
@@ -113,7 +110,7 @@ func DeletePassenger(ctx *gin.Context, c pb.PassengerServiceClient) {
 		return
 	}
 
-	if err := verifyPermission(ctx, req.Phone); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -128,14 +125,4 @@ func DeletePassenger(ctx *gin.Context, c pb.PassengerServiceClient) {
 	}
 
 	ctx.JSON(http.StatusOK, &res)
-}
-
-func verifyPermission(ctx *gin.Context, phoneBody string) error {
-	if ctx.GetString("role") == utils.ADMIN {
-		return nil
-	}
-	if ctx.GetString("phone") != phoneBody {
-		return fmt.Errorf("you don't have permission to access this resource")
-	}
-	return nil
 }

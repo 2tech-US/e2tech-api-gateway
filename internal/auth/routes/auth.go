@@ -27,6 +27,7 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 	res, err := c.Register(context.Background(), &pb.RegisterRequest{
 		Phone:    req.Phone,
 		Password: req.Password,
+		Name:     req.Name,
 		Role:     req.Role,
 	})
 
@@ -39,8 +40,9 @@ func Register(ctx *gin.Context, c pb.AuthServiceClient) {
 }
 
 type loginRequestBody struct {
-	Phone    string `json:"phone" binding:"required,min=8,max=15"`
-	Password string `json:"password" binding:"required,min=8"`
+	Phone       string `json:"phone" binding:"required,min=8,max=15"`
+	Password    string `json:"password" binding:"required,min=8"`
+	DeviceToken string `json:"device_token" binding:"required,min=1"`
 }
 
 type loginRequestUri struct {
@@ -61,9 +63,10 @@ func Login(ctx *gin.Context, c pb.AuthServiceClient) {
 	}
 
 	res, err := c.Login(context.Background(), &pb.LoginRequest{
-		Phone:    req.Phone,
-		Password: req.Password,
-		Role:     reqUri.Role,
+		Phone:       req.Phone,
+		Password:    req.Password,
+		Role:        reqUri.Role,
+		DeviceToken: req.DeviceToken,
 	})
 
 	if err != nil {

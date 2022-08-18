@@ -20,6 +20,8 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.GET("/", svc.ListDrivers)
 	routes.GET("/:phone", svc.GetDriverByPhone)
 	routes.PUT("/", svc.UpdateDriver)
+	routes.PUT("/location", svc.UpdateLocation)
+	routes.PUT("/status", svc.UpdateDriverStatus)
 
 	return svc
 }
@@ -38,4 +40,12 @@ func (svc *ServiceClient) UpdateDriver(ctx *gin.Context) {
 
 func (svc *ServiceClient) DeleteDriver(ctx *gin.Context) {
 	routes.DeleteDriver(ctx, svc.DriverClient)
+}
+
+func (svc *ServiceClient) UpdateLocation(ctx *gin.Context) {
+	routes.UpdateLocation(ctx, svc.DriverClient)
+}
+
+func (svc *ServiceClient) UpdateDriverStatus(ctx *gin.Context) {
+	routes.UpdateDriverStatus(ctx, svc.DriverClient)
 }

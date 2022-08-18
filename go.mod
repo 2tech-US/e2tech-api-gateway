@@ -3,6 +3,7 @@ module github.com/lntvan166/e2tech-api-gateway
 go 1.18
 
 require (
+	github.com/gin-gonic/gin v1.8.1
 	github.com/spf13/viper v1.12.0
 	google.golang.org/grpc v1.48.0
 	google.golang.org/protobuf v1.28.0
@@ -11,7 +12,6 @@ require (
 require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.10.0 // indirect

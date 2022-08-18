@@ -2,15 +2,13 @@ syntax = "proto3";
 
 package passenger;
 
-option go_package = "./internal/pb";
+option go_package = "./internal/passenger/pb";
 
 service PassengerService {
   rpc CreatePassenger(CreatePassengerRequest) returns (CreatePassengerResponse) {}
   rpc GetPassengerByPhone(GetPassengerByPhoneRequest) returns (GetPassengerByPhoneResponse) {}
   rpc ListPassengers(ListPassengersRequest) returns (ListPassengersResponse) {}
   rpc UpdatePassenger(UpdatePassengerRequest) returns (UpdatePassengerResponse) {}
-  rpc UpdatePassword(UpdatePasswordRequest) returns (UpdatePasswordResponse) {}
-  rpc VerifyPassenger(VerifyPassengerRequest) returns (VerifyPassengerResponse) {}
   rpc DeletePassenger(DeletePassengerRequest) returns (DeletePassengerResponse) {}
 
 }
@@ -25,8 +23,7 @@ message Passenger {
 
 message CreatePassengerRequest {
   string phone = 1;
-  string password = 2;
-  string name = 3;
+  string name = 2;
 }
 
 message CreatePassengerResponse {
@@ -60,10 +57,9 @@ message ListPassengersResponse {
 }
 
 message UpdatePassengerRequest {
-  int64 id = 1;
-  string phone = 2;
-  string name = 3;
-  string dateOfBirth = 4;
+  string phone = 1;
+  string name = 2;
+  string dateOfBirth = 3;
 }
 
 message UpdatePassengerResponse {
@@ -72,26 +68,6 @@ message UpdatePassengerResponse {
   Passenger passenger = 3;
 }
 
-message UpdatePasswordRequest {
-  string phone = 1;
-  string password = 2;
-}
-
-message UpdatePasswordResponse {
-  int64 status = 1;
-  string error = 2;
-  Passenger passenger = 3;
-}
-
-message VerifyPassengerRequest {
-  string phone = 1;
-}
-
-message VerifyPassengerResponse {
-  int64 status = 1;
-  string error = 2;
-  Passenger passenger = 3;
-}
 
 message DeletePassengerRequest {
   string phone = 1;
