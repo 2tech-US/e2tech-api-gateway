@@ -50,13 +50,13 @@ message getAddressResponse{
   Address address = 3;
 }
 
-message getListAddressRequest{
+message searchAddressRequest{
   int32 offset = 1;
   int32 limit = 2;
   string searchAddress = 3;
 }
 
-message getListAddressResponse{
+message searchAddressResponse{
   int64 status = 1;
   string error = 2;
   repeated string result = 3;
@@ -88,9 +88,10 @@ message updateLocationResponse{
 message CallCenterRequestCreation {
   int64 id = 1;
   string phone = 2 ;
-  string employeeId = 3;
-  AddressKey  pickingAddress = 4;
-  AddressKey arrivingAddress = 5;
+  string type = 3;
+  string employeeId = 4;
+  AddressKey  pickingAddress = 5;
+  AddressKey arrivingAddress = 6;
 }
 
 message CallCenterRequestResponse {
@@ -101,6 +102,7 @@ message CallCenterRequestResponse {
   Address arrivingAddress = 5;
   google.protobuf.Timestamp createAt = 6;
   bool sending = 7;
+  string type = 8;
 }
 
 
@@ -127,12 +129,7 @@ message getCallCenterRequestResponse {
 message getListCallCenterRequest {
   int32 offset = 1;
   int32 limit = 2;
-}
-
-message getListCallCenterRequestByPhone {
-  string phone = 1;
-  int32 offset = 2;
-  int32 limit = 3;
+  string phone = 3;
 }
 
 message getListRequestResponse {
@@ -145,7 +142,7 @@ message getListRequestResponse {
 service LocationService {
   // unary - synchronous
   rpc getAddress(getAddressRequest) returns (getAddressResponse) {}
-  rpc getAddressList(getListAddressRequest) returns (getListAddressResponse) {}
+  rpc searchAddress(searchAddressRequest) returns (searchAddressResponse) {}
   rpc createAddress(createAddressRequest) returns (getAddressResponse) {}
   rpc updateAddress(updateAddressRequest) returns (updateAddressResponse) {}
   rpc updateLocation(updateLocationRequest) returns (updateLocationResponse) {}
@@ -153,10 +150,6 @@ service LocationService {
   rpc createRequest(createCallCenterRequest) returns (createCallCenterRequestResponse) {}
   rpc getRequest(getCallCenterRequest) returns (getCallCenterRequestResponse) {}
   rpc getListRequest(getListCallCenterRequest) returns (getListRequestResponse) {}
-  rpc getListRequestByPhone(getListCallCenterRequestByPhone) returns (getListRequestResponse) {}
-
-
-
 
   // server-streaming - asynchronous
   //  rpc getAddressList(getListAddressRequest) returns (stream getListAddressResponse) {}

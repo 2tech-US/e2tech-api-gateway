@@ -11,11 +11,11 @@ import (
 )
 
 type GetAddressRequestBody struct {
-	City     string `json:"city" binding:"required,min=3,max=15"`
-	District string `json:"district" binding:"required,min=3,max=15"`
-	Ward     string `json:"ward" binding:"required,min=3,max=15"`
-	Street   string `json:"street" binding:"required,min=3,max=15"`
-	Home     string `json:"home" binding:"required,min=3,max=15"`
+	City     string `json:"city" binding:"required,min=1,max=30"`
+	District string `json:"district" binding:"required,min=1,max=30"`
+	Ward     string `json:"ward" binding:"required,min=1,max=30"`
+	Street   string `json:"street" binding:"required,min=1,max=30"`
+	Home     string `json:"home" binding:"required,min=1,max=30"`
 }
 
 func GetAddress(ctx *gin.Context, c pb.LocationServiceClient) {
@@ -70,18 +70,18 @@ func CreateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 }
 
 type SearchAddressQuery struct {
-	Offset        int32  `form:"offset" binding:"required,min=0"`
-	Limit         int32  `form:"limit" binding:"required,min=1,max=20"`
+	Offset        int32  `form:"offset" binding:"required,min=1"`
+	Limit         int32  `form:"limit" binding:"required,min=1,max=30"`
 	SearchAddress string `form:"search" binding:"required,min=1"`
 }
 
-func GetAddressList(ctx *gin.Context, c pb.LocationServiceClient) {
+func SearchAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	var q SearchAddressQuery
 	if err := ctx.ShouldBindQuery(&q); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
-	res, err := c.GetAddressList(context.Background(), &pb.GetListAddressRequest{
+	res, err := c.SearchAddress(context.Background(), &pb.SearchAddressRequest{
 		Offset:        q.Offset,
 		Limit:         q.Limit,
 		SearchAddress: q.SearchAddress,
@@ -157,6 +157,7 @@ func UpdateLocation(ctx *gin.Context, c pb.LocationServiceClient) {
 type CreateRequestBody struct {
 	Phone           string                `json:"phone" binding:"required"`
 	EmployeeId      string                `json:"employeeId" binding:"required"`
+	Type            string                `json:"type" binding:"required"`
 	PickingAddress  GetAddressRequestBody `json:"picking" binding:"required"`
 	ArrivingAddress GetAddressRequestBody `json:"arriving" binding:"required"`
 }
@@ -174,6 +175,7 @@ func CreateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		Request: &pb.CallCenterRequestCreation{
 			Id:         0,
 			Phone:      b.Phone,
+			Type:       b.Type,
 			EmployeeId: b.EmployeeId,
 			PickingAddress: &pb.AddressKey{
 				City:     picking.City,
@@ -222,8 +224,9 @@ func GetRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 }
 
 type GetListRequestQuery struct {
-	Offset int32 `form:"offset" binding:"required"`
-	Limit  int32 `form:"limit" binding:"required"`
+	Offset int32  `form:"offset" binding:"required,min=1"`
+	Limit  int32  `form:"limit" binding:"required,min=1,max=30"`
+	Phone  string `form:"phone"`
 }
 
 func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
@@ -235,39 +238,13 @@ func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	res, err := c.GetListRequest(context.Background(), &pb.GetListCallCenterRequest{
 		Offset: q.Offset,
 		Limit:  q.Limit,
+		Phone:  q.Phone,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, &res)
-}
-
-type GetListRequestByPhoneUri struct {
-	Phone string `uri:"phone" binding:"required"`
-}
-
-func GetListRequestByPhone(ctx *gin.Context, c pb.LocationServiceClient) {
-	var query GetListRequestQuery
-	var uri GetListRequestByPhoneUri
-	if err := ctx.ShouldBindQuery(query); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-	if err := ctx.ShouldBindUri(uri); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-	res, err := c.GetListRequestByPhone(context.Background(), &pb.GetListCallCenterRequestByPhone{
-		Phone:  uri.Phone,
-		Offset: query.Offset,
-		Limit:  query.Limit,
-	})
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
-		return
-	}
 	ctx.JSON(http.StatusOK, &res)
 }
 

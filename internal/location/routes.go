@@ -20,13 +20,11 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.GET("/address", svc.GetAddress)
 	routes.POST("/address", svc.CreateAddress)
 	routes.PUT("/address", svc.UpdateAddress)
-	routes.GET("/address/search", svc.GetAddressList)
+	routes.GET("/address/search", svc.SearchAddress)
 
-	routes.GET("/request/:phone", svc.GetRequest)
-	routes.GET("/requests", svc.GetListRequest)
-	routes.GET("/requests/:phone", svc.GetListRequestBYPhone)
-
-	routes.POST("/request/", svc.CreateRequest)
+	routes.GET("/request/:id", svc.GetRequest)
+	routes.GET("/request", svc.GetListRequest)
+	routes.POST("/request", svc.CreateRequest)
 
 	return svc
 }
@@ -35,8 +33,8 @@ func (svc *ServiceClient) GetAddress(ctx *gin.Context) {
 	routes.GetAddress(ctx, svc.LocationClient)
 }
 
-func (svc *ServiceClient) GetAddressList(ctx *gin.Context) {
-	routes.GetAddressList(ctx, svc.LocationClient)
+func (svc *ServiceClient) SearchAddress(ctx *gin.Context) {
+	routes.SearchAddress(ctx, svc.LocationClient)
 }
 
 func (svc *ServiceClient) CreateAddress(ctx *gin.Context) {
@@ -55,9 +53,6 @@ func (svc *ServiceClient) GetListRequest(ctx *gin.Context) {
 	routes.GetListRequest(ctx, svc.LocationClient)
 }
 
-func (svc *ServiceClient) GetListRequestBYPhone(ctx *gin.Context) {
-	routes.UpdateAddress(ctx, svc.LocationClient)
-}
 func (svc *ServiceClient) CreateRequest(ctx *gin.Context) {
 	routes.CreateRequest(ctx, svc.LocationClient)
 }
