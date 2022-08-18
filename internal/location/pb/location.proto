@@ -59,7 +59,7 @@ message searchAddressRequest{
 message searchAddressResponse{
   int64 status = 1;
   string error = 2;
-  repeated string result = 3;
+  repeated string items = 3;
 }
 
 message updateAddressRequest{
@@ -135,7 +135,8 @@ message getListCallCenterRequest {
 message getListRequestResponse {
   int64 status = 1;
   string error = 2;
-  repeated CallCenterRequestResponse requests = 3;
+  repeated CallCenterRequestResponse items = 3;
+  int32 total= 4;
 }
 
 
