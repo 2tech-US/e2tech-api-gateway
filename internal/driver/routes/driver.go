@@ -36,6 +36,34 @@ func GetDriverByPhone(ctx *gin.Context, c pb.DriverServiceClient) {
 	ctx.JSON(http.StatusOK, &res)
 }
 
+type getLocationRequestBody struct {
+	Phone string `uri:"phone" binding:"required,min=8,max=15"`
+}
+
+func GetLocation(ctx *gin.Context, c pb.DriverServiceClient) {
+	var req getLocationRequestBody
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.GetLocation(context.Background(), &pb.GetLocationRequest{
+		Phone: req.Phone,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
+
 type listDriversRequestBody struct {
 	Offset int32 `json:"offset" binding:"min=0"`
 	Limit  int32 `json:"limit" binding:"required,min=1,max=100"`
