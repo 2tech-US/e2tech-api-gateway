@@ -1,4 +1,4 @@
-package location
+package callcenter
 
 import (
 	"github.com/gin-gonic/gin"
@@ -18,8 +18,8 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes := r.Group("/callcenter")
 	routes.Use(a.AuthRequired)
 	routes.GET("/", svc.GetListEmployee)
-	routes.GET("/:id", svc.GetEmployee)
-	routes.PUT("/", svc.UpdateEmployee)
+	routes.GET("/:phone", svc.GetEmployee)
+	routes.PUT("/:phone", svc.UpdateEmployee)
 
 	return svc
 }

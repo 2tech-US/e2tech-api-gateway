@@ -1,4 +1,4 @@
-package location
+package callcenter
 
 import (
 	"fmt"
@@ -14,7 +14,6 @@ type ServiceClient struct {
 }
 
 func InitServiceClient(c *config.Config) pb.CallCenterServiceClient {
-	// using WithInsecure() because no SSL running
 	cc, err := grpc.Dial(c.CallCenterSvcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {

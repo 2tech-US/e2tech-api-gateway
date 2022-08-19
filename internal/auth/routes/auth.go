@@ -13,7 +13,7 @@ type registerRequestBody struct {
 	Phone    string `json:"phone" binding:"required,min=8,max=15"`
 	Password string `json:"password" binding:"required,min=8"`
 	Name     string `json:"name" binding:"required,min=3,max=50"`
-	Role     string `json:"role" binding:"required,oneof=admin passenger driver callcenter"`
+	Role     string `json:"role" binding:"required,oneof=admin passenger driver callcenter_creator callcenter_locator callcenter_manager"`
 }
 
 func Register(ctx *gin.Context, c pb.AuthServiceClient) {

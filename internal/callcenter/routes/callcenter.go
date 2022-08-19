@@ -2,7 +2,6 @@ package routes
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -50,7 +49,7 @@ func GetListEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, ""); err != nil {
+	if err := utils.VerifyAdminPermission(ctx); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -94,6 +93,7 @@ func CreateEmoloyee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 type UpdateEmployeeBody struct {
 	Name        string `json:"name" binding:"min=3"`
 	Role        string `json:"role"`
+	UrlImage    string `json:"url_image"`
 	DateOfBirth string `json:"date_of_birth"`
 }
 
@@ -134,14 +134,4 @@ func UpdateEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	}
 
 	ctx.JSON(http.StatusOK, &res)
-}
-
-func verifyPermission(ctx *gin.Context, phoneBody string) error {
-	if ctx.GetString("role") == utils.ADMIN {
-		return nil
-	}
-	if ctx.GetString("phone") != phoneBody {
-		return fmt.Errorf("you don't have permission to access this resource")
-	}
-	return nil
 }
