@@ -15,7 +15,7 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 		LocationClient: locationServiceClient,
 	}
 
-	routes := r.Group("/location")
+	routes := r.Group("/callcenter")
 	// routes.Use(a.AuthRequired)
 	routes.GET("/address", svc.GetAddress)
 	routes.POST("/address", svc.CreateAddress)

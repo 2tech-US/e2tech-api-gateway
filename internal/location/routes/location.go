@@ -99,13 +99,13 @@ type GetLocationRequestBody struct {
 	Longitude float64 `json:"longitude" binding:"required"`
 }
 
-type UpdateAddressRequest struct {
+type UpdateAddressBody struct {
 	Address  GetAddressRequestBody  `json:"address" binding:"required"`
 	Location GetLocationRequestBody `json:"location" binding:"required"`
 }
 
 func UpdateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
-	var b UpdateAddressRequest
+	var b UpdateAddressBody
 	if err := ctx.ShouldBindJSON(&b); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
