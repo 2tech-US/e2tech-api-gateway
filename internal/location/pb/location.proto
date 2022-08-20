@@ -130,6 +130,7 @@ message getListCallCenterRequest {
   int32 offset = 1;
   int32 limit = 2;
   string phone = 3;
+  string state =  4;
 }
 
 message getListRequestResponse {

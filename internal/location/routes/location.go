@@ -227,6 +227,7 @@ type GetListRequestQuery struct {
 	Offset int32  `form:"offset" binding:"required,min=1"`
 	Limit  int32  `form:"limit" binding:"required,min=1,max=30"`
 	Phone  string `form:"phone"`
+	State  string `form:"state"`
 }
 
 func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
@@ -239,6 +240,7 @@ func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		Offset: q.Offset,
 		Limit:  q.Limit,
 		Phone:  q.Phone,
+		State:  q.State,
 	})
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
