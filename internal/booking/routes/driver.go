@@ -10,8 +10,8 @@ import (
 )
 
 type acceptRequestRequest struct {
-	RequestID   int64  `json:"request_id" binding:"required"`
-	DriverPhone string `json:"driver_phone" binding:"required"`
+	PassengerPhone string `json:"passenger_phone" binding:"required,min=8,max=15"`
+	DriverPhone    string `json:"driver_phone" binding:"required"`
 }
 
 func AcceptRequest(ctx *gin.Context, c pb.BookingServiceClient) {
@@ -27,8 +27,8 @@ func AcceptRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 	}
 
 	res, err := c.AcceptRequest(context.Background(), &pb.AcceptRequestRequest{
-		RequestId:   req.RequestID,
-		DriverPhone: req.DriverPhone,
+		PassengerPhone: req.PassengerPhone,
+		DriverPhone:    req.DriverPhone,
 	})
 
 	if err != nil {
@@ -40,8 +40,8 @@ func AcceptRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 }
 
 type RejectRequestRequest struct {
-	RequestID   int64  `json:"request_id" binding:"required"`
-	DriverPhone string `json:"driver_phone" binding:"required"`
+	PassengerPhone string `json:"passenger_phone" binding:"required"`
+	DriverPhone    string `json:"driver_phone" binding:"required"`
 }
 
 func RejectRequest(ctx *gin.Context, c pb.BookingServiceClient) {
@@ -57,8 +57,8 @@ func RejectRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 	}
 
 	res, err := c.RejectRequest(context.Background(), &pb.RejectRequestRequest{
-		RequestId:   req.RequestID,
-		DriverPhone: req.DriverPhone,
+		PassengerPhone: req.PassengerPhone,
+		DriverPhone:    req.DriverPhone,
 	})
 
 	if err != nil {

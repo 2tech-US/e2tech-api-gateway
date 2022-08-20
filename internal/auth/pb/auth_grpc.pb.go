@@ -26,6 +26,7 @@ type AuthServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Validate(ctx context.Context, in *ValidateRequest, opts ...grpc.CallOption) (*ValidateResponse, error)
 	Verify(ctx context.Context, in *VerifyRequest, opts ...grpc.CallOption) (*VerifyResponse, error)
+	GetDeviceToken(ctx context.Context, in *GetDeviceTokenRequest, opts ...grpc.CallOption) (*GetDeviceTokenResponse, error)
 }
 
 type authServiceClient struct {
@@ -72,6 +73,15 @@ func (c *authServiceClient) Verify(ctx context.Context, in *VerifyRequest, opts 
 	return out, nil
 }
 
+func (c *authServiceClient) GetDeviceToken(ctx context.Context, in *GetDeviceTokenRequest, opts ...grpc.CallOption) (*GetDeviceTokenResponse, error) {
+	out := new(GetDeviceTokenResponse)
+	err := c.cc.Invoke(ctx, "/auth.AuthService/GetDeviceToken", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility
@@ -80,6 +90,7 @@ type AuthServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Validate(context.Context, *ValidateRequest) (*ValidateResponse, error)
 	Verify(context.Context, *VerifyRequest) (*VerifyResponse, error)
+	GetDeviceToken(context.Context, *GetDeviceTokenRequest) (*GetDeviceTokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -98,6 +109,9 @@ func (UnimplementedAuthServiceServer) Validate(context.Context, *ValidateRequest
 }
 func (UnimplementedAuthServiceServer) Verify(context.Context, *VerifyRequest) (*VerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
+}
+func (UnimplementedAuthServiceServer) GetDeviceToken(context.Context, *GetDeviceTokenRequest) (*GetDeviceTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeviceToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 
@@ -184,6 +198,24 @@ func _AuthService_Verify_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetDeviceToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeviceTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetDeviceToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/auth.AuthService/GetDeviceToken",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetDeviceToken(ctx, req.(*GetDeviceTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -206,6 +238,10 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Verify",
 			Handler:    _AuthService_Verify_Handler,
+		},
+		{
+			MethodName: "GetDeviceToken",
+			Handler:    _AuthService_GetDeviceToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

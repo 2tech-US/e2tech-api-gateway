@@ -33,7 +33,7 @@ func (svc *ServiceClient) GetListEmployee(ctx *gin.Context) {
 }
 
 func (svc *ServiceClient) CreateEmployee(ctx *gin.Context) {
-	routes.CreateEmoloyee(ctx, svc.CallCenterClient)
+	routes.CreateEmployee(ctx, svc.CallCenterClient)
 }
 
 func (svc *ServiceClient) UpdateEmployee(ctx *gin.Context) {

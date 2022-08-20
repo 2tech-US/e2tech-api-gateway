@@ -72,7 +72,7 @@ type CreateEmployeeBody struct {
 	Role  string `json:"role" binding:"required"`
 }
 
-func CreateEmoloyee(ctx *gin.Context, c pb.CallCenterServiceClient) {
+func CreateEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	var b CreateEmployeeBody
 	if err := ctx.ShouldBindJSON(&b); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))

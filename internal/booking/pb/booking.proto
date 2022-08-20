@@ -96,7 +96,7 @@ message SendRequestResponse {
 
 message AcceptRequestRequest {
   string driver_phone = 1;
-  int64 request_id = 2;
+  string passenger_phone = 2;
 }
 
 message AcceptRequestResponse {
@@ -106,7 +106,7 @@ message AcceptRequestResponse {
 
 message RejectRequestRequest {
   string driver_phone = 1;
-  int64 request_id = 2;
+  string passenger_phone = 2;
 }
 
 message RejectRequestResponse {

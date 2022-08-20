@@ -189,7 +189,7 @@ func UpdateLocation(ctx *gin.Context, c pb.DriverServiceClient) {
 
 type updateStatusRequestBody struct {
 	Phone  string `json:"phone" binding:"required"`
-	Status string `json:"status" binding:"required"`
+	Status string `json:"status" binding:"required,oneof=finding inprogress offline"`
 }
 
 func UpdateDriverStatus(ctx *gin.Context, c pb.DriverServiceClient) {

@@ -9,6 +9,7 @@ service AuthService {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc Validate(ValidateRequest) returns (ValidateResponse) {}
   rpc Verify(VerifyRequest) returns (VerifyResponse) {}
+  rpc GetDeviceToken(GetDeviceTokenRequest) returns (GetDeviceTokenResponse) {}
 }
 
 // Register
@@ -63,3 +64,12 @@ message VerifyResponse {
   int64 status = 1;
   string error = 2;
 }
+
+message GetDeviceTokenRequest { string phone = 1; }
+
+message GetDeviceTokenResponse {
+  int64 status = 1;
+  string error = 2;
+  string token = 3;
+}
+
