@@ -9,6 +9,34 @@ import (
 	"github.com/lntvan166/e2tech-api-gateway/internal/utils"
 )
 
+type getRequestRequest struct {
+	Phone string `uri:"phone" binding:"required"`
+}
+
+func GetRequest(ctx *gin.Context, c pb.BookingServiceClient) {
+	var req getRequestRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.GetRequest(context.Background(), &pb.GetRequestRequest{
+		PassengerPhone: req.Phone,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
+
 type acceptRequestRequest struct {
 	PassengerPhone string `json:"passenger_phone" binding:"required,min=8,max=15"`
 	DriverPhone    string `json:"driver_phone" binding:"required"`

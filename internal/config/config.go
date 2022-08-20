@@ -10,6 +10,8 @@ type Config struct {
 	CallCenterSvcUrl string `mapstructure:"CALLCENTER_SVC_URL"`
 	BookingSvcUrl    string `mapstructure:"BOOKING_SVC_URL"`
 	LocationSvcUrl   string `mapstructure:"LOCATION_SVC_URL"`
+
+	SecretKey string `mapstructure:"SECRET_KEY"`
 }
 
 func LoadConfig() (c Config, err error) {
