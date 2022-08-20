@@ -65,7 +65,7 @@ func CloseRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyAdminPermission(ctx); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -93,7 +93,7 @@ func GetResponse(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, ""); err != nil {
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}

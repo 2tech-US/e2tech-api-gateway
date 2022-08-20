@@ -21,7 +21,7 @@ func AcceptRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, ""); err != nil {
+	if err := utils.VerifyPermission(ctx, req.DriverPhone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -51,7 +51,7 @@ func RejectRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, ""); err != nil {
+	if err := utils.VerifyPermission(ctx, req.DriverPhone); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
