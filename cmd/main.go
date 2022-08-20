@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lntvan166/e2tech-api-gateway/internal/auth"
+	"github.com/lntvan166/e2tech-api-gateway/internal/booking"
 	"github.com/lntvan166/e2tech-api-gateway/internal/callcenter"
 	"github.com/lntvan166/e2tech-api-gateway/internal/config"
 	"github.com/lntvan166/e2tech-api-gateway/internal/driver"
@@ -25,6 +26,7 @@ func main() {
 	authSvc := *auth.RegisterRoutes(r, &c)
 	passenger.RegisterRoutes(r, &c, &authSvc)
 	driver.RegisterRoutes(r, &c, &authSvc)
+	booking.RegisterRoutes(r, &c, &authSvc)
 	location.RegisterRoutes(r, &c, &authSvc)
 	callcenter.RegisterRoutes(r, &c, &authSvc)
 
