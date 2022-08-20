@@ -10,12 +10,12 @@ import (
 )
 
 type ServiceClient struct {
-	PassengerClient pb.BookingServiceClient
+	BookingClient pb.BookingServiceClient
 }
 
 func InitServiceClient(c *config.Config) pb.BookingServiceClient {
 	// using WithInsecure() because no SSL running
-	cc, err := grpc.Dial(c.PassengerSvcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.Dial(c.BookingSvcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	if err != nil {
 		fmt.Println("Could not connect:", err)

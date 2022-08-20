@@ -10,9 +10,9 @@ import (
 func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) *ServiceClient {
 	a := auth.InitAuthMiddleware(authSvc)
 
-	passengerServiceClient := InitServiceClient(c)
+	bookingServiceClient := InitServiceClient(c)
 	svc := &ServiceClient{
-		PassengerClient: passengerServiceClient,
+		BookingClient: bookingServiceClient,
 	}
 
 	routes := r.Group("/booking")
@@ -27,21 +27,21 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 }
 
 func (svc *ServiceClient) CreateRequest(ctx *gin.Context) {
-	routes.CreateRequest(ctx, svc.PassengerClient)
+	routes.CreateRequest(ctx, svc.BookingClient)
 }
 
 func (svc *ServiceClient) GetResponse(ctx *gin.Context) {
-	routes.GetResponse(ctx, svc.PassengerClient)
+	routes.GetResponse(ctx, svc.BookingClient)
 }
 
 func (svc *ServiceClient) CloseRequest(ctx *gin.Context) {
-	routes.CloseRequest(ctx, svc.PassengerClient)
+	routes.CloseRequest(ctx, svc.BookingClient)
 }
 
 func (svc *ServiceClient) AcceptRequest(ctx *gin.Context) {
-	routes.AcceptRequest(ctx, svc.PassengerClient)
+	routes.AcceptRequest(ctx, svc.BookingClient)
 }
 
 func (svc *ServiceClient) RejectRequest(ctx *gin.Context) {
-	routes.RejectRequest(ctx, svc.PassengerClient)
+	routes.RejectRequest(ctx, svc.BookingClient)
 }
