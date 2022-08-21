@@ -47,7 +47,7 @@ message getAddressRequest{
 message getAddressResponse{
   int64 status = 1;
   string error = 2;
-  Address address = 3;
+  Address item = 3;
 }
 
 message searchAddressRequest{
@@ -70,7 +70,7 @@ message updateAddressRequest{
 message updateAddressResponse{
   int64 status = 1;
   string error = 2;
-  Address address = 3;
+  Address item = 3;
 }
 
 message updateLocationRequest{
@@ -80,10 +80,8 @@ message updateLocationRequest{
 message updateLocationResponse{
   int64 status = 1;
   string error = 2;
-  Location location = 3;
+  Location item = 3;
 }
-
-// CALL CENTER REQUEST
 
 message CallCenterRequestCreation {
   int64 id = 1;
@@ -113,7 +111,7 @@ message createCallCenterRequest{
 message createCallCenterRequestResponse {
   int64 status = 1;
   string error = 2;
-  CallCenterRequestResponse request = 3;
+  CallCenterRequestResponse item = 3;
 }
 
 message getCallCenterRequest {
@@ -123,7 +121,7 @@ message getCallCenterRequest {
 message getCallCenterRequestResponse {
   int64 status = 1;
   string error = 2;
-  CallCenterRequestResponse request = 3;
+  CallCenterRequestResponse item = 3;
 }
 
 message getListCallCenterRequest {
@@ -140,6 +138,16 @@ message getListRequestResponse {
   int32 total= 4;
 }
 
+message locateCallCenterRequest{
+  int64 requestId = 1;
+  LocationKey pickingLocation = 2;
+  LocationKey arrivingLocation = 3;
+}
+
+message getRecentPhoneCallRequest{
+  int32 offset =1;
+  int32 limit =2;
+}
 
 service LocationService {
   // unary - synchronous
@@ -147,14 +155,14 @@ service LocationService {
   rpc searchAddress(searchAddressRequest) returns (searchAddressResponse) {}
   rpc createAddress(createAddressRequest) returns (getAddressResponse) {}
   rpc updateAddress(updateAddressRequest) returns (updateAddressResponse) {}
+
   rpc updateLocation(updateLocationRequest) returns (updateLocationResponse) {}
 
   rpc createRequest(createCallCenterRequest) returns (createCallCenterRequestResponse) {}
   rpc getRequest(getCallCenterRequest) returns (getCallCenterRequestResponse) {}
+  rpc locateRequest(locateCallCenterRequest) returns (getCallCenterRequestResponse) {}
   rpc getListRequest(getListCallCenterRequest) returns (getListRequestResponse) {}
+  rpc sendCallCenterRequest(getCallCenterRequest) returns  (getCallCenterRequestResponse) {}
 
-  // server-streaming - asynchronous
-  //  rpc getAddressList(getListAddressRequest) returns (stream getListAddressResponse) {}
-  // client-streaming - asynchronous
-  // bi-direct-streaming
+  rpc getRecentPhoneCall(getRecentPhoneCallRequest) returns (searchAddressResponse) {}
 }

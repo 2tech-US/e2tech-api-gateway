@@ -32,10 +32,6 @@ func (svc *ServiceClient) GetListEmployee(ctx *gin.Context) {
 	routes.GetListEmployee(ctx, svc.CallCenterClient)
 }
 
-func (svc *ServiceClient) CreateEmployee(ctx *gin.Context) {
-	routes.CreateEmployee(ctx, svc.CallCenterClient)
-}
-
 func (svc *ServiceClient) UpdateEmployee(ctx *gin.Context) {
 	routes.UpdateEmployee(ctx, svc.CallCenterClient)
 }

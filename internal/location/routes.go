@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) *ServiceClient {
-	// a := auth.InitAuthMiddleware(authSvc)
+	a := auth.InitAuthMiddleware(authSvc)
 
 	locationServiceClient := InitServiceClient(c)
 	svc := &ServiceClient{
@@ -16,15 +16,18 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	}
 
 	routes := r.Group("/callcenter")
-	// routes.Use(a.AuthRequired)
+	routes.Use(a.AuthRequired)
 	routes.GET("/address", svc.GetAddress)
+	routes.GET("/address/search", svc.SearchAddress)
 	routes.POST("/address", svc.CreateAddress)
 	routes.PUT("/address", svc.UpdateAddress)
-	routes.GET("/address/search", svc.SearchAddress)
 
+	routes.GET("/request/phone", svc.GetRecentPhoneCall)
 	routes.GET("/request/:id", svc.GetRequest)
 	routes.GET("/request", svc.GetListRequest)
 	routes.POST("/request", svc.CreateRequest)
+	routes.POST("/request/:id", svc.SendRequest)
+	routes.PUT("/request/:id", svc.LocateRequest)
 
 	return svc
 }
@@ -53,6 +56,18 @@ func (svc *ServiceClient) GetListRequest(ctx *gin.Context) {
 	routes.GetListRequest(ctx, svc.LocationClient)
 }
 
+func (svc *ServiceClient) GetRecentPhoneCall(ctx *gin.Context) {
+	routes.GetRecentPhoneCall(ctx, svc.LocationClient)
+}
+
 func (svc *ServiceClient) CreateRequest(ctx *gin.Context) {
 	routes.CreateRequest(ctx, svc.LocationClient)
+}
+
+func (svc *ServiceClient) LocateRequest(ctx *gin.Context) {
+	routes.LocateRequest(ctx, svc.LocationClient)
+}
+
+func (svc *ServiceClient) SendRequest(ctx *gin.Context) {
+	routes.SendRequest(ctx, svc.LocationClient)
 }

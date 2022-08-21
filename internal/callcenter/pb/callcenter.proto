@@ -30,7 +30,7 @@ message getEmployeeRequest{
 message getEmployeeResponse{
   int64 status = 1;
   string error = 2;
-  CallCenterEmployee items = 3;
+  CallCenterEmployee item = 3;
 }
 
 message getListEmployeeRequest{
@@ -45,9 +45,7 @@ message getListEmployeeResponse{
   int64 total = 4;
 }
 
-
 service CallCenterService {
-  // unary - synchronous
   rpc getEmployee(getEmployeeRequest) returns (getEmployeeResponse);
   rpc getListEmployee(getListEmployeeRequest) returns (getListEmployeeResponse);
   rpc createEmployee(createCallCenterEmployeeRequest) returns (getEmployeeResponse);

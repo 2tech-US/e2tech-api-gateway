@@ -30,7 +30,10 @@ type LocationServiceClient interface {
 	UpdateLocation(ctx context.Context, in *UpdateLocationRequest, opts ...grpc.CallOption) (*UpdateLocationResponse, error)
 	CreateRequest(ctx context.Context, in *CreateCallCenterRequest, opts ...grpc.CallOption) (*CreateCallCenterRequestResponse, error)
 	GetRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
+	LocateRequest(ctx context.Context, in *LocateCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
 	GetListRequest(ctx context.Context, in *GetListCallCenterRequest, opts ...grpc.CallOption) (*GetListRequestResponse, error)
+	SendCallCenterRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
+	GetRecentPhoneCall(ctx context.Context, in *GetRecentPhoneCallRequest, opts ...grpc.CallOption) (*SearchAddressResponse, error)
 }
 
 type locationServiceClient struct {
@@ -104,9 +107,36 @@ func (c *locationServiceClient) GetRequest(ctx context.Context, in *GetCallCente
 	return out, nil
 }
 
+func (c *locationServiceClient) LocateRequest(ctx context.Context, in *LocateCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error) {
+	out := new(GetCallCenterRequestResponse)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/locateRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *locationServiceClient) GetListRequest(ctx context.Context, in *GetListCallCenterRequest, opts ...grpc.CallOption) (*GetListRequestResponse, error) {
 	out := new(GetListRequestResponse)
 	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/getListRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *locationServiceClient) SendCallCenterRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error) {
+	out := new(GetCallCenterRequestResponse)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/sendCallCenterRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *locationServiceClient) GetRecentPhoneCall(ctx context.Context, in *GetRecentPhoneCallRequest, opts ...grpc.CallOption) (*SearchAddressResponse, error) {
+	out := new(SearchAddressResponse)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/getRecentPhoneCall", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +155,10 @@ type LocationServiceServer interface {
 	UpdateLocation(context.Context, *UpdateLocationRequest) (*UpdateLocationResponse, error)
 	CreateRequest(context.Context, *CreateCallCenterRequest) (*CreateCallCenterRequestResponse, error)
 	GetRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error)
+	LocateRequest(context.Context, *LocateCallCenterRequest) (*GetCallCenterRequestResponse, error)
 	GetListRequest(context.Context, *GetListCallCenterRequest) (*GetListRequestResponse, error)
+	SendCallCenterRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error)
+	GetRecentPhoneCall(context.Context, *GetRecentPhoneCallRequest) (*SearchAddressResponse, error)
 	mustEmbedUnimplementedLocationServiceServer()
 }
 
@@ -154,8 +187,17 @@ func (UnimplementedLocationServiceServer) CreateRequest(context.Context, *Create
 func (UnimplementedLocationServiceServer) GetRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRequest not implemented")
 }
+func (UnimplementedLocationServiceServer) LocateRequest(context.Context, *LocateCallCenterRequest) (*GetCallCenterRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LocateRequest not implemented")
+}
 func (UnimplementedLocationServiceServer) GetListRequest(context.Context, *GetListCallCenterRequest) (*GetListRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListRequest not implemented")
+}
+func (UnimplementedLocationServiceServer) SendCallCenterRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendCallCenterRequest not implemented")
+}
+func (UnimplementedLocationServiceServer) GetRecentPhoneCall(context.Context, *GetRecentPhoneCallRequest) (*SearchAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecentPhoneCall not implemented")
 }
 func (UnimplementedLocationServiceServer) mustEmbedUnimplementedLocationServiceServer() {}
 
@@ -296,6 +338,24 @@ func _LocationService_GetRequest_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LocationService_LocateRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LocateCallCenterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LocationServiceServer).LocateRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tech2.microservice.LocationService/locateRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LocationServiceServer).LocateRequest(ctx, req.(*LocateCallCenterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LocationService_GetListRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetListCallCenterRequest)
 	if err := dec(in); err != nil {
@@ -310,6 +370,42 @@ func _LocationService_GetListRequest_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LocationServiceServer).GetListRequest(ctx, req.(*GetListCallCenterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LocationService_SendCallCenterRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCallCenterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LocationServiceServer).SendCallCenterRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tech2.microservice.LocationService/sendCallCenterRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LocationServiceServer).SendCallCenterRequest(ctx, req.(*GetCallCenterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LocationService_GetRecentPhoneCall_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecentPhoneCallRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LocationServiceServer).GetRecentPhoneCall(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tech2.microservice.LocationService/getRecentPhoneCall",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LocationServiceServer).GetRecentPhoneCall(ctx, req.(*GetRecentPhoneCallRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -350,8 +446,20 @@ var LocationService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LocationService_GetRequest_Handler,
 		},
 		{
+			MethodName: "locateRequest",
+			Handler:    _LocationService_LocateRequest_Handler,
+		},
+		{
 			MethodName: "getListRequest",
 			Handler:    _LocationService_GetListRequest_Handler,
+		},
+		{
+			MethodName: "sendCallCenterRequest",
+			Handler:    _LocationService_SendCallCenterRequest_Handler,
+		},
+		{
+			MethodName: "getRecentPhoneCall",
+			Handler:    _LocationService_GetRecentPhoneCall_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

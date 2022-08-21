@@ -67,29 +67,6 @@ func GetListEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	ctx.JSON(http.StatusOK, &res)
 }
 
-type CreateEmployeeBody struct {
-	Phone string `json:"phone" binding:"required,min=7,max=30"`
-	Role  string `json:"role" binding:"required"`
-}
-
-func CreateEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
-	var b CreateEmployeeBody
-	if err := ctx.ShouldBindJSON(&b); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-	res, err := c.CreateEmployee(context.Background(), &pb.CreateCallCenterEmployeeRequest{
-		Phone: b.Phone,
-		Role:  b.Role,
-	})
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, &res)
-}
-
 type UpdateEmployeeBody struct {
 	Name        string `json:"name" binding:"min=3"`
 	Role        string `json:"role"`
