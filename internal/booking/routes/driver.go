@@ -20,11 +20,6 @@ func GetRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
-		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
-		return
-	}
-
 	res, err := c.GetRequest(context.Background(), &pb.GetRequestRequest{
 		PassengerPhone: req.Phone,
 	})
