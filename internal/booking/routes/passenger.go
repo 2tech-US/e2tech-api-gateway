@@ -109,3 +109,33 @@ func GetResponse(ctx *gin.Context, c pb.BookingServiceClient) {
 
 	ctx.JSON(http.StatusOK, &res)
 }
+
+type listHistoryRequestBody struct {
+	Phone string `json:"phone" binding:"required"`
+	Role  string `json:"role" binding:"required,oneof=driver passenger"`
+}
+
+func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
+	var req listHistoryRequestBody
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.ListHistory(context.Background(), &pb.ListHistoryRequest{
+		Phone: req.Phone,
+		Role:  req.Role,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
