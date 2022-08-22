@@ -20,6 +20,8 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.GET("/request/:phone", svc.GetRequest)
 	routes.GET("/history", svc.ListHistory)
 
+	routes.GET("/history/revenue/", svc.GetRevenue)
+
 	routes.POST("/request", svc.CreateRequest)
 	routes.POST("/request/:phone/close", svc.CloseRequest)
 	routes.GET("/response/:phone", svc.GetResponse)
@@ -61,4 +63,8 @@ func (svc *ServiceClient) RejectRequest(ctx *gin.Context) {
 
 func (svc *ServiceClient) Complete(ctx *gin.Context) {
 	routes.CompleteTrip(ctx, svc.BookingClient)
+}
+
+func (svc *ServiceClient) GetRevenue(ctx *gin.Context) {
+	routes.GetRevenue(ctx, svc.BookingClient)
 }
