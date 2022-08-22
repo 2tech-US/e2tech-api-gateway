@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type ServiceClient struct {
+type DriverServiceClient struct {
 	DriverClient pb.DriverServiceClient
 }
 
-func InitServiceClient(c *config.Config) pb.DriverServiceClient {
+func InitDiverServiceClient(c *config.Config) pb.DriverServiceClient {
 	// using WithInsecure() because no SSL running
 	cc, err := grpc.Dial(c.DriverSvcUrl, grpc.WithTransportCredentials(insecure.NewCredentials()))
 

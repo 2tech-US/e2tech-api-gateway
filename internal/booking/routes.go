@@ -17,12 +17,14 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 
 	routes := r.Group("/booking")
 	routes.Use(a.AuthRequired)
-	routes.POST("/request", svc.CreateRequest)
 	routes.GET("/request/:phone", svc.GetRequest)
+	routes.POST("/request", svc.CreateRequest)
 	routes.POST("/request/:phone/close", svc.CloseRequest)
 	routes.GET("/response/:phone", svc.GetResponse)
+
 	routes.POST("request/accept", svc.AcceptRequest)
 	routes.POST("request/reject", svc.RejectRequest)
+	routes.POST("request/complete", svc.Complete)
 
 	return svc
 }
@@ -49,4 +51,8 @@ func (svc *ServiceClient) AcceptRequest(ctx *gin.Context) {
 
 func (svc *ServiceClient) RejectRequest(ctx *gin.Context) {
 	routes.RejectRequest(ctx, svc.BookingClient)
+}
+
+func (svc *ServiceClient) Complete(ctx *gin.Context) {
+	routes.CompleteTrip(ctx, svc.BookingClient)
 }

@@ -7,11 +7,11 @@ import (
 	"github.com/lntvan166/e2tech-api-gateway/internal/driver/routes"
 )
 
-func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) *ServiceClient {
+func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient) *DriverServiceClient {
 	a := auth.InitAuthMiddleware(authSvc)
 
-	driverServiceClient := InitServiceClient(c)
-	svc := &ServiceClient{
+	driverServiceClient := InitDiverServiceClient(c)
+	svc := &DriverServiceClient{
 		DriverClient: driverServiceClient,
 	}
 
@@ -27,30 +27,30 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	return svc
 }
 
-func (svc *ServiceClient) ListDrivers(ctx *gin.Context) {
+func (svc *DriverServiceClient) ListDrivers(ctx *gin.Context) {
 	routes.ListDrivers(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) GetDriverByPhone(ctx *gin.Context) {
+func (svc *DriverServiceClient) GetDriverByPhone(ctx *gin.Context) {
 	routes.GetDriverByPhone(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) GetLocation(ctx *gin.Context) {
+func (svc *DriverServiceClient) GetLocation(ctx *gin.Context) {
 	routes.GetLocation(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) UpdateDriver(ctx *gin.Context) {
+func (svc *DriverServiceClient) UpdateDriver(ctx *gin.Context) {
 	routes.UpdateDriver(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) DeleteDriver(ctx *gin.Context) {
+func (svc *DriverServiceClient) DeleteDriver(ctx *gin.Context) {
 	routes.DeleteDriver(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) UpdateLocation(ctx *gin.Context) {
+func (svc *DriverServiceClient) UpdateLocation(ctx *gin.Context) {
 	routes.UpdateLocation(ctx, svc.DriverClient)
 }
 
-func (svc *ServiceClient) UpdateDriverStatus(ctx *gin.Context) {
+func (svc *DriverServiceClient) UpdateDriverStatus(ctx *gin.Context) {
 	routes.UpdateDriverStatus(ctx, svc.DriverClient)
 }

@@ -91,3 +91,33 @@ func RejectRequest(ctx *gin.Context, c pb.BookingServiceClient) {
 
 	ctx.JSON(http.StatusOK, &res)
 }
+
+type CompleteRequestRequest struct {
+	DriverPhone    string `json:"driver_phone" binding:"required"`
+	PassengerPhone string `json:"passenger_phone" binding:"required"`
+}
+
+func CompleteTrip(ctx *gin.Context, c pb.BookingServiceClient) {
+	var req CompleteRequestRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	if err := utils.VerifyPermission(ctx, req.DriverPhone); err != nil {
+		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.CompleteTrip(context.Background(), &pb.CompleteTripRequest{
+		DriverPhone:    req.DriverPhone,
+		PassengerPhone: req.PassengerPhone,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
