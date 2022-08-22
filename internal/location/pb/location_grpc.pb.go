@@ -22,7 +22,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LocationServiceClient interface {
-	// unary - synchronous
 	GetAddress(ctx context.Context, in *GetAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error)
 	SearchAddress(ctx context.Context, in *SearchAddressRequest, opts ...grpc.CallOption) (*SearchAddressResponse, error)
 	CreateAddress(ctx context.Context, in *CreateAddressRequest, opts ...grpc.CallOption) (*GetAddressResponse, error)
@@ -31,6 +30,7 @@ type LocationServiceClient interface {
 	CreateRequest(ctx context.Context, in *CreateCallCenterRequest, opts ...grpc.CallOption) (*CreateCallCenterRequestResponse, error)
 	GetRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
 	LocateRequest(ctx context.Context, in *LocateCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
+	CancelRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
 	GetListRequest(ctx context.Context, in *GetListCallCenterRequest, opts ...grpc.CallOption) (*GetListRequestResponse, error)
 	SendCallCenterRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error)
 	GetRecentPhoneCall(ctx context.Context, in *GetRecentPhoneCallRequest, opts ...grpc.CallOption) (*SearchAddressResponse, error)
@@ -116,6 +116,15 @@ func (c *locationServiceClient) LocateRequest(ctx context.Context, in *LocateCal
 	return out, nil
 }
 
+func (c *locationServiceClient) CancelRequest(ctx context.Context, in *GetCallCenterRequest, opts ...grpc.CallOption) (*GetCallCenterRequestResponse, error) {
+	out := new(GetCallCenterRequestResponse)
+	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/cancelRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *locationServiceClient) GetListRequest(ctx context.Context, in *GetListCallCenterRequest, opts ...grpc.CallOption) (*GetListRequestResponse, error) {
 	out := new(GetListRequestResponse)
 	err := c.cc.Invoke(ctx, "/tech2.microservice.LocationService/getListRequest", in, out, opts...)
@@ -147,7 +156,6 @@ func (c *locationServiceClient) GetRecentPhoneCall(ctx context.Context, in *GetR
 // All implementations must embed UnimplementedLocationServiceServer
 // for forward compatibility
 type LocationServiceServer interface {
-	// unary - synchronous
 	GetAddress(context.Context, *GetAddressRequest) (*GetAddressResponse, error)
 	SearchAddress(context.Context, *SearchAddressRequest) (*SearchAddressResponse, error)
 	CreateAddress(context.Context, *CreateAddressRequest) (*GetAddressResponse, error)
@@ -156,6 +164,7 @@ type LocationServiceServer interface {
 	CreateRequest(context.Context, *CreateCallCenterRequest) (*CreateCallCenterRequestResponse, error)
 	GetRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error)
 	LocateRequest(context.Context, *LocateCallCenterRequest) (*GetCallCenterRequestResponse, error)
+	CancelRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error)
 	GetListRequest(context.Context, *GetListCallCenterRequest) (*GetListRequestResponse, error)
 	SendCallCenterRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error)
 	GetRecentPhoneCall(context.Context, *GetRecentPhoneCallRequest) (*SearchAddressResponse, error)
@@ -189,6 +198,9 @@ func (UnimplementedLocationServiceServer) GetRequest(context.Context, *GetCallCe
 }
 func (UnimplementedLocationServiceServer) LocateRequest(context.Context, *LocateCallCenterRequest) (*GetCallCenterRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LocateRequest not implemented")
+}
+func (UnimplementedLocationServiceServer) CancelRequest(context.Context, *GetCallCenterRequest) (*GetCallCenterRequestResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelRequest not implemented")
 }
 func (UnimplementedLocationServiceServer) GetListRequest(context.Context, *GetListCallCenterRequest) (*GetListRequestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetListRequest not implemented")
@@ -356,6 +368,24 @@ func _LocationService_LocateRequest_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LocationService_CancelRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCallCenterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LocationServiceServer).CancelRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/tech2.microservice.LocationService/cancelRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LocationServiceServer).CancelRequest(ctx, req.(*GetCallCenterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LocationService_GetListRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetListCallCenterRequest)
 	if err := dec(in); err != nil {
@@ -448,6 +478,10 @@ var LocationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "locateRequest",
 			Handler:    _LocationService_LocateRequest_Handler,
+		},
+		{
+			MethodName: "cancelRequest",
+			Handler:    _LocationService_CancelRequest_Handler,
 		},
 		{
 			MethodName: "getListRequest",

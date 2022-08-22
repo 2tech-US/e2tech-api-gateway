@@ -40,7 +40,7 @@ func GetAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -71,7 +71,7 @@ func CreateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -102,7 +102,7 @@ func SearchAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 		SearchAddress: q.SearchAddress,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -131,7 +131,7 @@ func GetRecentPhoneCall(ctx *gin.Context, c pb.LocationServiceClient) {
 		Limit:  q.Limit,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -174,8 +174,9 @@ func UpdateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 			Longitude: location.Longitude,
 		},
 	})
+
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -199,7 +200,7 @@ func CreateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 
 	picking, arriving := b.PickingAddress, b.ArrivingAddress
 
-	if err := utils.VerifyRole(ctx, []string{utils.ADMIN, utils.CALLCENTER_LOCATOR}); err != nil {
+	if err := utils.VerifyRole(ctx, []string{utils.ADMIN, utils.CALLCENTER_CREATOR}); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
@@ -227,7 +228,7 @@ func CreateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		},
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -254,7 +255,7 @@ func GetRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		RequestId: p.Id,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -287,51 +288,32 @@ func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		State:  q.State,
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
 	ctx.JSON(http.StatusOK, &res)
 }
 
-type UpdateRequestBody struct {
-	PickingLocation  GetLocationRequestBody `json:"picking_location" binding:"required"`
-	ArrivingLocation GetLocationRequestBody `json:"arriving_location" binding:"required"`
-}
-
-func LocateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
+func CancelRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	var p GetRequestParams
-	var b UpdateRequestBody
 
-	if err := ctx.ShouldBindJSON(&p); err != nil {
+	if err := ctx.ShouldBindUri(&p); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
-	if err := ctx.ShouldBindJSON(&b); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-
-	if err := utils.VerifyRole(ctx, []string{utils.ADMIN, utils.CALLCENTER_LOCATOR}); err != nil {
+	if err := utils.VerifyRole(ctx, []string{utils.ADMIN, utils.CALLCENTER_MANAGER}); err != nil {
 		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
 		return
 	}
 
-	res, err := c.LocateRequest(context.Background(), &pb.LocateCallCenterRequest{
+	res, err := c.CancelRequest(context.Background(), &pb.GetCallCenterRequest{
 		RequestId: p.Id,
-		PickingLocation: &pb.LocationKey{
-			Latitude:  b.PickingLocation.Latitude,
-			Longitude: b.PickingLocation.Longitude,
-		},
-		ArrivingLocation: &pb.LocationKey{
-			Latitude:  b.ArrivingLocation.Latitude,
-			Longitude: b.ArrivingLocation.Longitude,
-		},
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -340,7 +322,7 @@ func LocateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 
 func SendRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	var p GetRequestParams
-	if err := ctx.ShouldBindQuery(&p); err != nil {
+	if err := ctx.ShouldBindUri(&p); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
@@ -353,8 +335,9 @@ func SendRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	res, err := c.SendCallCenterRequest(context.Background(), &pb.GetCallCenterRequest{
 		RequestId: p.Id,
 	})
+
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 

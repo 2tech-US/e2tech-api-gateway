@@ -30,7 +30,7 @@ func GetEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func GetListEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	})
 
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
 
@@ -106,9 +106,8 @@ func UpdateEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 		},
 	})
 	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		utils.ErrorResponsev2(ctx, err)
 		return
 	}
-
 	ctx.JSON(http.StatusOK, &res)
 }

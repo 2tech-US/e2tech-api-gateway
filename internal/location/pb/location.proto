@@ -150,7 +150,6 @@ message getRecentPhoneCallRequest{
 }
 
 service LocationService {
-  // unary - synchronous
   rpc getAddress(getAddressRequest) returns (getAddressResponse) {}
   rpc searchAddress(searchAddressRequest) returns (searchAddressResponse) {}
   rpc createAddress(createAddressRequest) returns (getAddressResponse) {}
@@ -161,6 +160,7 @@ service LocationService {
   rpc createRequest(createCallCenterRequest) returns (createCallCenterRequestResponse) {}
   rpc getRequest(getCallCenterRequest) returns (getCallCenterRequestResponse) {}
   rpc locateRequest(locateCallCenterRequest) returns (getCallCenterRequestResponse) {}
+  rpc cancelRequest(getCallCenterRequest) returns (getCallCenterRequestResponse) {}
   rpc getListRequest(getListCallCenterRequest) returns (getListRequestResponse) {}
   rpc sendCallCenterRequest(getCallCenterRequest) returns  (getCallCenterRequestResponse) {}
 

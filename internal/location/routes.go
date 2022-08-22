@@ -27,7 +27,7 @@ func RegisterRoutes(r *gin.Engine, c *config.Config, authSvc *auth.ServiceClient
 	routes.GET("/request", svc.GetListRequest)
 	routes.POST("/request", svc.CreateRequest)
 	routes.POST("/request/:id", svc.SendRequest)
-	routes.PUT("/request/:id", svc.LocateRequest)
+	routes.PUT("/request/:id", svc.CancelRequest)
 
 	return svc
 }
@@ -64,8 +64,8 @@ func (svc *ServiceClient) CreateRequest(ctx *gin.Context) {
 	routes.CreateRequest(ctx, svc.LocationClient)
 }
 
-func (svc *ServiceClient) LocateRequest(ctx *gin.Context) {
-	routes.LocateRequest(ctx, svc.LocationClient)
+func (svc *ServiceClient) CancelRequest(ctx *gin.Context) {
+	routes.CancelRequest(ctx, svc.LocationClient)
 }
 
 func (svc *ServiceClient) SendRequest(ctx *gin.Context) {
