@@ -111,8 +111,12 @@ func GetResponse(ctx *gin.Context, c pb.BookingServiceClient) {
 }
 
 type listHistoryRequestBody struct {
-	Phone string `json:"phone" binding:"required"`
-	Role  string `json:"role" binding:"required,oneof=driver passenger"`
+	Phone     string `json:"phone" binding:"required"`
+	Role      string `json:"role" binding:"required,oneof=driver passenger"`
+	StartDate string `json:"start_date" binding:"required"`
+	EndDate   string `json:"end_date" binding:"required"`
+	Limit     int32  `json:"limit" binding:"required"`
+	Offset    int32  `json:"offset" binding:"min=0"`
 }
 
 func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
@@ -128,41 +132,12 @@ func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
 	}
 
 	res, err := c.ListHistory(context.Background(), &pb.ListHistoryRequest{
-		Phone: req.Phone,
-		Role:  req.Role,
-	})
-
-	if err != nil {
-		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, &res)
-}
-
-type getRevenueRequestQuery struct {
-	Phone  string `form:"phone"`
-	Role   string `form:"role"`
-	Date   string `form:"date"`
-	Offset string `form:"offset" binding:"required"`
-	Limit  string `form:"limit" binding:"required"`
-}
-
-func GetRevenue(ctx *gin.Context, c pb.BookingServiceClient) {
-	var req getRevenueRequestQuery
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-
-	if err := utils.VerifyAdminPermission(ctx); err != nil {
-		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
-		return
-	}
-
-	res, err := c.ListHistory(context.Background(), &pb.ListHistoryRequest{
-		Phone: req.Phone,
-		Role:  req.Role,
+		Phone:     req.Phone,
+		Role:      req.Role,
+		StartDate: req.StartDate,
+		EndDate:   req.EndDate,
+		Limit:     req.Limit,
+		Offset:    req.Offset,
 	})
 
 	if err != nil {

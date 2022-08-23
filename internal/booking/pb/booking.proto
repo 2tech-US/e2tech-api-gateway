@@ -77,6 +77,10 @@ message History {
 message ListHistoryRequest {
   string phone = 1;
   string role = 2;
+  string start_date = 3;
+  string end_date = 4;
+  int32 limit = 5;
+  int32 offset = 6;
 }
 
 message ListHistoryResponse {
@@ -156,12 +160,4 @@ message UpdateResponseRequest {
 message UpdateResponseResponse {
   int64 status = 1;
   string error = 2;
-}
-
-message GetRevenueRequest {
-  int32 offset = 1;
-  int32 limit = 2;
-  string phone = 3;
-  string role = 4;
-  string datetime = 5;
 }
