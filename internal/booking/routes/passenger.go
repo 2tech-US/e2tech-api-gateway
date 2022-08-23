@@ -111,7 +111,7 @@ func GetResponse(ctx *gin.Context, c pb.BookingServiceClient) {
 }
 
 type listHistoryRequestBody struct {
-	Phone     string `json:"phone" binding:"required"`
+	Phone     string `json:"phone"`
 	Role      string `json:"role" binding:"required,oneof=driver passenger"`
 	StartDate string `json:"start_date" binding:"required"`
 	EndDate   string `json:"end_date" binding:"required"`
@@ -131,14 +131,26 @@ func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	res, err := c.ListHistory(context.Background(), &pb.ListHistoryRequest{
-		Phone:     req.Phone,
-		Role:      req.Role,
-		StartDate: req.StartDate,
-		EndDate:   req.EndDate,
-		Limit:     req.Limit,
-		Offset:    req.Offset,
-	})
+	var res any
+	var err error
+
+	if len(req.Phone) > 0 {
+		res, err = c.ListHistory(context.Background(), &pb.ListHistoryRequest{
+			Phone:     req.Phone,
+			Role:      req.Role,
+			StartDate: req.StartDate,
+			EndDate:   req.EndDate,
+			Limit:     req.Limit,
+			Offset:    req.Offset,
+		})
+	} else {
+		res, err = c.ListAllHistory(context.Background(), &pb.ListAllHistoryRequest{
+			StartDate: req.StartDate,
+			EndDate:   req.EndDate,
+			Limit:     req.Limit,
+			Offset:    req.Offset,
+		})
+	}
 
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
