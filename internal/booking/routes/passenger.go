@@ -110,18 +110,18 @@ func GetResponse(ctx *gin.Context, c pb.BookingServiceClient) {
 	ctx.JSON(http.StatusOK, &res)
 }
 
-type listHistoryRequestBody struct {
-	Phone     string `json:"phone"`
-	Role      string `json:"role" binding:"required,oneof=driver passenger"`
-	StartDate string `json:"start_date" binding:"required"`
-	EndDate   string `json:"end_date" binding:"required"`
-	Limit     int32  `json:"limit" binding:"required"`
-	Offset    int32  `json:"offset" binding:"min=0"`
+type listHistoryRequestQuery struct {
+	Phone     string `form:"phone"`
+	Role      string `form:"role" binding:"required,oneof=driver passenger"`
+	StartDate string `form:"start_date" binding:"required"`
+	EndDate   string `form:"end_date" binding:"required"`
+	Limit     int32  `form:"limit" binding:"required"`
+	Offset    int32  `form:"offset" binding:"min=0"`
 }
 
 func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
-	var req listHistoryRequestBody
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	var req listHistoryRequestQuery
+	if err := ctx.ShouldBindQuery(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
