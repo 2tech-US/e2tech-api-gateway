@@ -126,11 +126,6 @@ func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
 		return
 	}
 
-	if err := utils.VerifyPermission(ctx, req.Phone); err != nil {
-		ctx.JSON(http.StatusForbidden, utils.ErrorResponse(err))
-		return
-	}
-
 	var res any
 	var err error
 
@@ -151,6 +146,35 @@ func ListHistory(ctx *gin.Context, c pb.BookingServiceClient) {
 			Offset:    req.Offset,
 		})
 	}
+
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, &res)
+}
+
+type listRequestRequestQuery struct {
+	StartDate string `form:"start_date" binding:"required"`
+	EndDate   string `form:"end_date" binding:"required"`
+	Limit     int32  `form:"limit" binding:"required"`
+	Offset    int32  `form:"offset" binding:"min=0"`
+}
+
+func ListAllRequest(ctx *gin.Context, c pb.BookingServiceClient) {
+	var req listRequestRequestQuery
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+		return
+	}
+
+	res, err := c.ListAllRequest(context.Background(), &pb.ListAllRequestRequest{
+		StartDate: req.StartDate,
+		EndDate:   req.EndDate,
+		Limit:     req.Limit,
+		Offset:    req.Offset,
+	})
 
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, utils.ErrorResponse(err))
