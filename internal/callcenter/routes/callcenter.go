@@ -30,7 +30,7 @@ func GetEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -60,7 +60,7 @@ func GetListEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -106,7 +106,7 @@ func UpdateEmployee(ctx *gin.Context, c pb.CallCenterServiceClient) {
 		},
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 	ctx.JSON(http.StatusOK, &res)

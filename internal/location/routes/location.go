@@ -40,7 +40,7 @@ func GetAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -71,7 +71,7 @@ func CreateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -102,7 +102,7 @@ func SearchAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 		SearchAddress: q.SearchAddress,
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -131,7 +131,7 @@ func GetRecentPhoneCall(ctx *gin.Context, c pb.LocationServiceClient) {
 		Limit:  q.Limit,
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -176,7 +176,7 @@ func UpdateAddress(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -228,7 +228,7 @@ func CreateRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		},
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -255,7 +255,7 @@ func GetRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		RequestId: p.Id,
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -288,7 +288,7 @@ func GetListRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 		State:  q.State,
 	})
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -313,7 +313,7 @@ func CancelRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 
@@ -337,7 +337,7 @@ func SendRequest(ctx *gin.Context, c pb.LocationServiceClient) {
 	})
 
 	if err != nil {
-		utils.ErrorResponsev2(ctx, err)
+		utils.ErrorResponseV2(ctx, err)
 		return
 	}
 

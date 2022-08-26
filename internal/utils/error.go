@@ -13,7 +13,7 @@ func ErrorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
 }
 
-func ErrorResponsev2(ctx *gin.Context, err error) {
+func ErrorResponseV2(ctx *gin.Context, err error) {
 	errStatus, _ := status.FromError(err)
 	errMsg := errStatus.Message()
 	ctx.JSON(HTTPStatusFromCode(errStatus.Code()), ErrorResponse(errors.New(errMsg)))
